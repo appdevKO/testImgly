@@ -1,0 +1,94 @@
+plugins {
+    id "com.android.application"
+    id "kotlin-android"
+    // The Flutter Gradle Plugin must be applied after the Android and Kotlin Gradle plugins.
+    id "dev.flutter.flutter-gradle-plugin"
+}
+apply plugin: 'ly.img.android.sdk'
+
+// Comment out the modules you don't need, to save size.
+IMGLY.configure {
+    modules {
+        include 'ui:text'
+        include 'ui:focus'
+        include 'ui:frame'
+        include 'ui:brush'
+        include 'ui:filter'
+        include 'ui:sticker'
+        include 'ui:overlay'
+        include 'ui:transform'
+        include 'ui:adjustment'
+        include 'ui:text-design'
+
+
+        // This module is big, remove the serializer if you don't need that feature.
+        include 'backend:serializer'
+
+
+        // Remove the asset packs you don't need, these are also big in size.
+        include 'assets:font-basic'
+        include 'assets:frame-basic'
+        include 'assets:filter-basic'
+        include 'assets:overlay-basic'
+        include 'assets:sticker-shapes'
+        include 'assets:sticker-emoticons'
+
+
+        include 'backend:sticker-smart'
+        include 'backend:background-removal'
+    }
+}
+
+
+def localProperties = new Properties()
+def localPropertiesFile = rootProject.file("local.properties")
+if (localPropertiesFile.exists()) {
+    localPropertiesFile.withReader("UTF-8") { reader ->
+        localProperties.load(reader)
+    }
+}
+
+def flutterVersionCode = localProperties.getProperty("flutter.versionCode")
+if (flutterVersionCode == null) {
+    flutterVersionCode = "1"
+}
+
+def flutterVersionName = localProperties.getProperty("flutter.versionName")
+if (flutterVersionName == null) {
+    flutterVersionName = "1.0"
+}
+
+android {
+    namespace = "com.example.testimgly"
+    compileSdkVersion 34
+    ndkVersion "25.2.9519653"
+    buildToolsVersion "33.0.0"
+    ndkVersion flutter.ndkVersion
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
+    }
+
+    defaultConfig {
+        // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
+        applicationId = "com.example.testimgly"
+        // You can update the following values to match your application needs.
+        // For more information, see: https://docs.flutter.dev/deployment/android#reviewing-the-gradle-build-configuration.
+        minSdk = flutter.minSdkVersion
+        targetSdk = flutter.targetSdkVersion
+        versionCode = flutterVersionCode.toInteger()
+        versionName = flutterVersionName
+    }
+
+    buildTypes {
+        release {
+            // TODO: Add your own signing config for the release build.
+            // Signing with the debug keys for now, so `flutter run --release` works.
+            signingConfig = signingConfigs.debug
+        }
+    }
+}
+
+flutter {
+    source = "../.."
+}
